@@ -1,0 +1,12 @@
+# Competition answers and builder: never commit these
+solution.csv
+**/solution.csv
+*.zip
+build_competition_files.ipynb
+**/files/
+
+# Local clutter
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store
+Thumbs.db
