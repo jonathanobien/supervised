@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supervised Learning Essentials</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reset.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/monokai.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&family=Inter:wght@400;600&display=swap">
+<style>
+  :root {
+    --dark: #14213D;
+    --light: #FBFBF8;
+    --soft: #EEF1F4;
+    --text: #2D3748;
+    --muted: #4A5568;
+    --accent: #1F7A8C;
+    --accent2: #C0582E;
+    --good: #2F855A;
+  }
+  .reveal-viewport { background: var(--light); }
+  .reveal { font-family: 'Inter', Arial, sans-serif; font-size: 30px; color: var(--text); }
+  .reveal .slides section { text-align: left; }
+  .reveal h1, .reveal h2, .reveal h3 {
+    font-family: 'Space Grotesk', Arial, sans-serif; color: var(--dark);
+    text-transform: none; letter-spacing: -0.01em; line-height: 1.1; margin: 0 0 0.5em;
+  }
+  .reveal h1 { font-size: 2.4em; }
+  .reveal h2 { font-size: 1.55em; }
+  .reveal h3 { font-size: 1.05em; }
+  .reveal p, .reveal li { line-height: 1.4; }
+  .reveal ul, .reveal ol { margin-left: 1.1em; }
+  .reveal li { margin: 0.25em 0; }
+  .eyebrow { font-family: 'Space Grotesk', Arial, sans-serif; color: var(--accent); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.6em; margin-bottom: 0.4em !important; }
+  .muted { color: var(--muted); }
+  .small { font-size: 0.75em; }
+  .big { font-size: 1.3em; }
+  .center { text-align: center !important; }
+  .reveal table { font-size: 0.75em; border-collapse: collapse; margin: 0.4em 0; width: 100%; }
+  .reveal table th { background: var(--dark); color: var(--light); font-weight: 600; text-align: left; padding: 0.45em 0.7em; border: none; }
+  .reveal table td { padding: 0.45em 0.7em; border-bottom: 1px solid #D5DBE3; vertical-align: top; }
+  .reveal table tr:nth-child(even) td { background: var(--soft); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8em; }
+  .card { background: #FFFFFF; border: 1px solid #D5DBE3; border-radius: 14px; padding: 0.7em 0.9em; }
+  .card h3 { margin-bottom: 0.3em; }
+  .card p { margin: 0; font-size: 0.8em; }
+  .callout { border-left: 8px solid var(--accent2); background: #FBEDE6; padding: 0.6em 0.9em; border-radius: 6px; margin-top: 0.6em; }
+  .callout.blue { border-left-color: var(--accent); background: #E4F1F3; }
+  .badge { display: inline-block; background: var(--accent2); color: #FFFFFF; font-family: 'Space Grotesk', Arial, sans-serif;
+    font-weight: 600; font-size: 0.55em; padding: 0.25em 0.7em; border-radius: 999px; margin-bottom: 0.5em; }
+  .badge.blue { background: var(--accent); }
+  .steps { display: flex; gap: 0.5em; align-items: stretch; margin: 0.8em 0; }
+  .step { flex: 1; background: var(--dark); color: var(--light); border-radius: 12px; padding: 0.7em 0.5em; text-align: center; }
+  .step b { display: block; font-family: 'Space Grotesk', Arial, sans-serif; font-size: 1.1em; color: #9FD3DC; }
+  .step span { font-size: 0.7em; }
+  .arrow { align-self: center; color: var(--accent); font-size: 1.2em; }
+  .q { margin: 0.35em 0; }
+  .ans { color: var(--good); font-weight: 600; }
+  .reveal pre { width: 100%; box-shadow: none; font-size: 0.62em; margin: 0.4em 0; }
+  .reveal pre code { max-height: 560px; border-radius: 10px; padding: 0.8em; }
+  .reveal code { font-family: 'Courier New', monospace; }
+  .reveal p code, .reveal li code, .reveal td code { background: var(--soft); padding: 0.05em 0.3em; border-radius: 4px; font-size: 0.9em; }
+  /* dark slides */
+  .reveal section.dark h1, .reveal section.dark h2, .reveal section.dark h3 { color: var(--light); }
+  .reveal section.dark { color: #D7E3EA; }
+  .reveal section.dark .eyebrow { color: #9FD3DC; }
+  .cm td, .cm th { text-align: center !important; }
+  .cm .hit { color: var(--good); font-weight: 600; }
+  .cm .miss { color: var(--accent2); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 Title -->
+<section data-background-color="#14213D" class="dark">
+  <p class="eyebrow">Machine Learning · Lesson</p>
+  <h1>Supervised Learning Essentials</h1>
+  <p class="big">Understand core supervised models and build basic predictors in Python</p>
+  <p class="small">2 hours · Beginner · Builds on the regression lesson</p>
+  <aside class="notes">Welcome. Today we zoom out from regression to supervised learning as a whole: what it is, the two task types, the workflow, four core models, how to measure them, overfitting, and a hands-on with real medical data. There’s a 5-minute self-check after each section.</aside>
+</section>
+
+<!-- 2 Objectives -->
+<section>
+  <p class="eyebrow">Today’s goals</p>
+  <h2>By the end, you can…</h2>
+  <ol>
+    <li>Explain what supervised learning is, with real-life examples</li>
+    <li>Tell regression problems from classification problems</li>
+    <li>Follow the workflow: split → train → predict → evaluate</li>
+    <li>Describe 4 core models in plain language</li>
+    <li>Choose the right metric: RMSE, accuracy, precision, recall</li>
+    <li>Recognize overfitting and underfitting</li>
+    <li>Train and compare 3 classifiers in Python</li>
+  </ol>
+  <aside class="notes">Read through quickly. Point out that goals 1–6 are concepts and goal 7 is the hands-on in Colab.</aside>
+</section>
+
+<!-- 3 Agenda -->
+<section>
+  <p class="eyebrow">Agenda · 2 hours</p>
+  <h2>How today runs</h2>
+  <div class="grid2 small">
+    <table>
+      <tr><th>Time</th><th>Section</th></tr>
+      <tr><td>0:00</td><td>1. What is supervised learning? + self-check</td></tr>
+      <tr><td>0:12</td><td>2. Regression vs. classification + self-check</td></tr>
+      <tr><td>0:22</td><td>3. The workflow + self-check</td></tr>
+      <tr><td>0:33</td><td>4. Core models + self-check</td></tr>
+      <tr><td>0:50</td><td>5. Measuring success + self-check</td></tr>
+    </table>
+    <table>
+      <tr><th>Time</th><th>Section</th></tr>
+      <tr><td>1:07</td><td>Break</td></tr>
+      <tr><td>1:12</td><td>6. Overfitting vs. underfitting + self-check</td></tr>
+      <tr><td>1:25</td><td>7. Hands-on in Colab</td></tr>
+      <tr><td>1:50</td><td>8. Discussion</td></tr>
+      <tr><td>1:55</td><td>9. Exit quiz</td></tr>
+    </table>
+  </div>
+  <aside class="notes">Every self-check is 5 minutes: students answer alone first, then we reveal the answers on the next slide.</aside>
+</section>
+
+<!-- 4 What is SL -->
+<section>
+  <p class="eyebrow">1 · What is supervised learning?</p>
+  <h2>Learning from examples with known answers</h2>
+  <p>The computer studies examples where the <b>answer is already known</b>, then predicts answers for <b>new</b> examples.</p>
+  <div class="callout blue">
+    <p><b>Analogy:</b> a student practicing with an answer key. Try a problem, check the answer, adjust. After enough practice, they can solve new problems without the key.</p>
+  </div>
+  <aside class="notes">Time: 7 minutes for section 1. Stress the word “supervised”: the known answers act like a teacher correcting the model while it learns.</aside>
+</section>
+
+<!-- 5 Key terms -->
+<section>
+  <p class="eyebrow">1 · What is supervised learning?</p>
+  <h2>Key terms</h2>
+  <table>
+    <tr><th>Term</th><th>Meaning</th><th>Example: house prices</th></tr>
+    <tr><td><b>Features (X)</b></td><td>the inputs</td><td>house age, distance to MRT</td></tr>
+    <tr><td><b>Label / target (y)</b></td><td>the answer to predict</td><td>price per area</td></tr>
+    <tr><td><b>Training</b></td><td>learning from labeled examples</td><td>fitting the regression</td></tr>
+    <tr><td><b>Prediction</b></td><td>answering for new data</td><td>pricing a new house</td></tr>
+  </table>
+  <aside class="notes">Connect to the real-estate competition: students already used features and a target there.</aside>
+</section>
+
+<!-- 6 Examples -->
+<section>
+  <p class="eyebrow">1 · What is supervised learning?</p>
+  <h2>It’s everywhere</h2>
+  <div class="grid3">
+    <div class="card"><h3>Spam filter</h3><p>Email → spam or not</p></div>
+    <div class="card"><h3>Loan approval</h3><p>Applicant → approve or decline</p></div>
+    <div class="card"><h3>Medical diagnosis</h3><p>Test results → disease or healthy</p></div>
+    <div class="card"><h3>House prices</h3><p>House details → price</p></div>
+    <div class="card"><h3>Sales forecast</h3><p>Past months → next month’s sales</p></div>
+    <div class="card"><h3>Your idea?</h3><p>What could you predict?</p></div>
+  </div>
+  <div class="callout"><p><b>Ask the class:</b> What could you predict if you had past examples with answers?</p></div>
+  <aside class="notes">Take 2–3 answers from the class. Then move to self-check 1.</aside>
+</section>
+
+<!-- 7 SC1 -->
+<section>
+  <span class="badge">✏️ Self-check 1 · 5 min</span>
+  <h2>What is supervised learning?</h2>
+  <ol>
+    <li class="q">What makes learning “supervised”?<br><span class="small">a) The dataset is small · b) Each example has a known answer (label) · c) A teacher watches the computer</span></li>
+    <li class="q">For a <b>spam filter</b>, name two features and the label.</li>
+    <li class="q">True or false: after training, the model needs the correct answer to make a prediction.</li>
+    <li class="q">Give one real-life example of supervised learning not mentioned in class.</li>
+  </ol>
+  <aside class="notes">Give students 3–4 minutes to answer on their own, then reveal the answers on the next slide.</aside>
+</section>
+
+<!-- 8 SC1 answers -->
+<section>
+  <span class="badge blue">Answers · Self-check 1</span>
+  <h2>What is supervised learning?</h2>
+  <ol>
+    <li class="q"><span class="ans">b)</span> Each example has a known answer (label)</li>
+    <li class="q"><span class="ans">Features:</span> words in the email, sender, number of links · <span class="ans">Label:</span> spam / not spam</li>
+    <li class="q"><span class="ans">False</span>: the model predicts answers it hasn’t seen</li>
+    <li class="q"><span class="ans">Any valid example</span>, e.g. predicting delivery time, recognizing handwriting</li>
+  </ol>
+  <aside class="notes">Briefly discuss any wrong answers, especially question 3.</aside>
+</section>
+
+<!-- 9 Regression vs classification -->
+<section>
+  <p class="eyebrow">2 · Two kinds of problems</p>
+  <h2>Regression vs. classification</h2>
+  <table>
+    <tr><th></th><th>Regression</th><th>Classification</th></tr>
+    <tr><td><b>Predicts</b></td><td>a <b>number</b></td><td>a <b>category</b></td></tr>
+    <tr><td><b>Examples</b></td><td>price, temperature, sales</td><td>spam or not, pass or fail, disease or healthy</td></tr>
+    <tr><td><b>Our lessons</b></td><td>real-estate competition</td><td>today’s hands-on</td></tr>
+  </table>
+  <div class="callout blue"><p><b>Quick test:</b> Is the answer a number you can average? → regression. Is it a label from a list? → classification.</p></div>
+  <aside class="notes">Time: 5 minutes. The quick test helps with tricky cases like price categories (cheap / average / expensive), which are classification.</aside>
+</section>
+
+<!-- 10 SC2 -->
+<section>
+  <span class="badge">✏️ Self-check 2 · 5 min</span>
+  <h2>Regression or classification?</h2>
+  <p class="muted">Label each one <b>R</b> or <b>C</b>.</p>
+  <ol>
+    <li>Tomorrow’s temperature</li>
+    <li>Will a customer cancel their subscription?</li>
+    <li>How many units will sell next month</li>
+    <li>Which animal is in a photo</li>
+    <li>A patient’s blood pressure</li>
+    <li>Is a house “cheap”, “average” or “expensive”?</li>
+  </ol>
+  <aside class="notes">Students answer alone, then compare with a neighbour before the reveal.</aside>
+</section>
+
+<!-- 11 SC2 answers -->
+<section>
+  <span class="badge blue">Answers · Self-check 2</span>
+  <h2>Regression or classification?</h2>
+  <ol>
+    <li><span class="ans">R</span> · temperature is a number</li>
+    <li><span class="ans">C</span> · yes / no</li>
+    <li><span class="ans">R</span> · a count</li>
+    <li><span class="ans">C</span> · a category</li>
+    <li><span class="ans">R</span> · a measurement</li>
+    <li><span class="ans">C</span> · categories, even though it’s about price</li>
+  </ol>
+  <aside class="notes">Question 6 is the trap: it’s about price, but the answer is a category.</aside>
+</section>
+
+<!-- 12 Workflow -->
+<section>
+  <p class="eyebrow">3 · The workflow</p>
+  <h2>Five steps, every time</h2>
+  <div class="steps">
+    <div class="step"><b>1</b><span>Collect labeled data</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>2</b><span>Split: train 80% / test 20%</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>3</b><span>Train on train data</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>4</b><span>Predict on test data</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>5</b><span>Evaluate vs. true answers</span></div>
+  </div>
+  <p class="muted">Same steps for regression and classification, and for every model.</p>
+  <aside class="notes">Time: 6 minutes for section 3. Walk through each step using the real-estate competition as the example.</aside>
+</section>
+
+<!-- 13 Test set -->
+<section data-background-color="#14213D" class="dark">
+  <p class="eyebrow">3 · The workflow</p>
+  <h2>The test set is the final exam</h2>
+  <p class="big">Use it <b>once</b>, at the very end.</p>
+  <p>If you peek at it while building the model, the score stops being honest.</p>
+  <p class="small">Same idea as the hidden private leaderboard in our Kaggle competition.</p>
+  <aside class="notes">Ask: why can’t we just grade the model on the training data? (It has already seen those answers.)</aside>
+</section>
+
+<!-- 14 SC3 -->
+<section>
+  <span class="badge">✏️ Self-check 3 · 5 min</span>
+  <h2>The workflow</h2>
+  <ol>
+    <li class="q">Put these in order: <i>Evaluate, Split, Train, Collect, Predict</i></li>
+    <li class="q">Why shouldn’t we measure the model’s score on the training data?</li>
+    <li class="q">A student checks the test score, changes the features, and checks again, 10 times. What’s wrong?</li>
+    <li class="q">What does <code>random_state=42</code> do in <code>train_test_split</code>?</li>
+  </ol>
+  <aside class="notes">Question 4 recalls the regression lesson.</aside>
+</section>
+
+<!-- 15 SC3 answers -->
+<section>
+  <span class="badge blue">Answers · Self-check 3</span>
+  <h2>The workflow</h2>
+  <ol>
+    <li class="q"><span class="ans">Collect → Split → Train → Predict → Evaluate</span></li>
+    <li class="q">The model has already seen that data, so the score is <span class="ans">too optimistic</span>, like grading with memorized questions</li>
+    <li class="q">The test set is being used to make choices, so the final score is <span class="ans">no longer honest</span></li>
+    <li class="q">It makes the split <span class="ans">the same every time</span> you run it</li>
+  </ol>
+  <aside class="notes">Reinforce: choose features with training data only; test once.</aside>
+</section>
+
+<!-- 16 Core models -->
+<section>
+  <p class="eyebrow">4 · Core models</p>
+  <h2>Four models to know</h2>
+  <table>
+    <tr><th>Model</th><th>Task</th><th>The idea in one sentence</th></tr>
+    <tr><td><b>Linear regression</b></td><td>regression</td><td>Fit the best straight line through the data <span class="muted">(recap)</span></td></tr>
+    <tr><td><b>Logistic regression</b></td><td>classification</td><td>Fit a line, then turn its output into a <b>probability</b> from 0 to 1. Above 0.5 = “yes”</td></tr>
+    <tr><td><b>k-Nearest Neighbors</b></td><td>both</td><td>Find the <i>k</i> most similar known examples; the majority answer wins</td></tr>
+    <tr><td><b>Decision tree</b></td><td>both</td><td>Ask a series of yes/no questions, like a flowchart</td></tr>
+  </table>
+  <aside class="notes">Time: 12 minutes for section 4. Note that logistic regression is a classifier despite its name.</aside>
+</section>
+
+<!-- 17 Analogies -->
+<section>
+  <p class="eyebrow">4 · Core models</p>
+  <h2>Two models, two analogies</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>k-Nearest Neighbors</h3>
+      <p>“To guess a house’s price, look at the 5 most similar houses nearby.”</p>
+      <p class="muted" style="margin-top:0.5em">k = how many neighbors vote</p>
+    </div>
+    <div class="card">
+      <h3>Decision tree</h3>
+      <p>“Is the tumor larger than X? → Yes → Is its texture rough? → …”</p>
+      <p class="muted" style="margin-top:0.5em">Like a doctor’s checklist</p>
+    </div>
+  </div>
+  <aside class="notes">Draw a tiny 2-level tree on the board if there’s time.</aside>
+</section>
+
+<!-- 18 fit/predict -->
+<section>
+  <p class="eyebrow">4 · Core models</p>
+  <h2>Every model, the same three steps</h2>
+<pre><code class="language-python" data-trim>
+model.fit(X_train, y_train)    # 1. train
+pred = model.predict(X_test)   # 2. predict
+# 3. evaluate: compare pred with y_test
+</code></pre>
+  <p class="muted">Learn this pattern once and you can use any scikit-learn model.</p>
+  <aside class="notes">This is the key coding takeaway. The hands-on uses exactly these lines for three different models.</aside>
+</section>
+
+<!-- 19 SC4 -->
+<section>
+  <span class="badge">✏️ Self-check 4 · 5 min</span>
+  <h2>Core models</h2>
+  <ol class="small">
+    <li class="q">Match: <b>A</b> Linear regression · <b>B</b> Logistic regression · <b>C</b> k-NN · <b>D</b> Decision tree<br>
+      (1) flowchart of yes/no questions · (2) majority vote of the most similar examples · (3) straight line predicting a number · (4) probability 0–1 for a yes/no answer</li>
+    <li class="q">Logistic regression gives a tumor a cancer probability of <b>0.83</b>. What does it predict?</li>
+    <li class="q">k-NN with <b>k = 5</b>: 3 neighbors are spam, 2 are not. Prediction?</li>
+    <li class="q">Which two models can do <b>both</b> regression and classification?</li>
+    <li class="q">What two methods do all scikit-learn models share?</li>
+  </ol>
+  <aside class="notes">Students answer alone; reveal on the next slide.</aside>
+</section>
+
+<!-- 20 SC4 answers -->
+<section>
+  <span class="badge blue">Answers · Self-check 4</span>
+  <h2>Core models</h2>
+  <ol>
+    <li class="q"><span class="ans">A–3, B–4, C–2, D–1</span></li>
+    <li class="q"><span class="ans">Cancer</span> (0.83 is above 0.5)</li>
+    <li class="q"><span class="ans">Spam</span> (3 of 5 votes)</li>
+    <li class="q"><span class="ans">k-NN and decision tree</span></li>
+    <li class="q"><span class="ans"><code>fit()</code> and <code>predict()</code></span></li>
+  </ol>
+  <aside class="notes">If many missed question 1, revisit the analogies slide.</aside>
+</section>
+
+<!-- 21 Regression metrics recap -->
+<section>
+  <p class="eyebrow">5 · Measuring success</p>
+  <h2>Regression metrics (recap)</h2>
+  <div class="grid2">
+    <div class="card"><h3>RMSE</h3><p>The typical size of a mistake, in the target’s units. <b>Lower is better.</b></p></div>
+    <div class="card"><h3>R²</h3><p>Share of the variation the model explains. <b>Closer to 1 is better.</b></p></div>
+  </div>
+  <p class="muted">Our competition: guessing the average scores about 15.24 RMSE. A useful model beats that.</p>
+  <aside class="notes">Time: 12 minutes for section 5. Keep the regression recap to about 2 minutes; classification metrics are the new material.</aside>
+</section>
+
+<!-- 22 Confusion matrix -->
+<section>
+  <p class="eyebrow">5 · Measuring success</p>
+  <h2>Classification: the confusion matrix</h2>
+  <p class="muted small">Example: 100 patients, 40 actually have cancer</p>
+  <table class="cm">
+    <tr><th></th><th>Model says: cancer</th><th>Model says: no cancer</th></tr>
+    <tr><td><b>Actually cancer (40)</b></td><td class="hit">36 ✓ true positive</td><td class="miss">4 ✗ false negative (missed!)</td></tr>
+    <tr><td><b>Actually healthy (60)</b></td><td class="miss">6 ✗ false positive (false alarm)</td><td class="hit">54 ✓ true negative</td></tr>
+  </table>
+  <aside class="notes">Walk through each cell. Ask which mistake is worse for cancer screening: a false alarm or a missed cancer.</aside>
+</section>
+
+<!-- 23 Accuracy / recall / precision -->
+<section>
+  <p class="eyebrow">5 · Measuring success</p>
+  <h2>Three metrics from the same table</h2>
+  <table>
+    <tr><th>Metric</th><th>Question it answers</th><th>Example</th></tr>
+    <tr><td><b>Accuracy</b></td><td>How many did we get right overall?</td><td>(36 + 54) ÷ 100 = <b>90%</b></td></tr>
+    <tr><td><b>Recall</b></td><td>Of the sick patients, how many did we catch?</td><td>36 ÷ 40 = <b>90%</b></td></tr>
+    <tr><td><b>Precision</b></td><td>When we raise the alarm, how often are we right?</td><td>36 ÷ 42 = <b>86%</b></td></tr>
+  </table>
+  <aside class="notes">Write the three formulas on the board. Precision: 36 true alarms out of 42 total alarms (36 + 6).</aside>
+</section>
+
+<!-- 24 Why accuracy isn't enough -->
+<section data-background-color="#14213D" class="dark">
+  <p class="eyebrow">5 · Measuring success</p>
+  <h2>Why accuracy isn’t enough</h2>
+  <p class="big">If 1 in 100 patients has cancer, a model that always says “no cancer” is <b>99% accurate</b>…</p>
+  <p class="big">…and catches <b>zero</b> cancers. Recall = 0%.</p>
+  <aside class="notes">This is the most important idea in section 5. When one class is rare, check recall and precision, not just accuracy.</aside>
+</section>
+
+<!-- 25 SC5 -->
+<section>
+  <span class="badge">✏️ Self-check 5 · 5 min</span>
+  <h2>Measuring success</h2>
+  <p class="small">A bank checks <b>1,000</b> transactions; <b>50</b> are fraud. The model flags <b>40</b> of the fraud cases correctly and raises <b>10</b> false alarms.</p>
+  <ol class="small">
+    <li class="q">What’s the <b>accuracy</b>?</li>
+    <li class="q">What’s the <b>recall</b>?</li>
+    <li class="q">What’s the <b>precision</b>?</li>
+    <li class="q">Another model always says “not fraud”. Its accuracy and recall? Why is accuracy misleading?</li>
+    <li class="q">Two regression models have RMSE <b>5</b> and <b>8</b>. Which is better?</li>
+  </ol>
+  <aside class="notes">Allow calculators. Hint for question 1: count correct answers on both sides, fraud caught and normal transactions correctly passed.</aside>
+</section>
+
+<!-- 26 SC5 answers -->
+<section>
+  <span class="badge blue">Answers · Self-check 5</span>
+  <h2>Measuring success</h2>
+  <ol class="small">
+    <li class="q">Correct = 40 + 940 = 980 → <span class="ans">98%</span></li>
+    <li class="q">40 ÷ 50 = <span class="ans">80%</span></li>
+    <li class="q">40 ÷ (40 + 10) = <span class="ans">80%</span></li>
+    <li class="q">Accuracy 950 ÷ 1000 = <span class="ans">95%</span>, recall <span class="ans">0%</span>: looks good, catches no fraud</li>
+    <li class="q"><span class="ans">RMSE 5</span>: lower means smaller mistakes</li>
+  </ol>
+  <aside class="notes">Point out: the useless “always not fraud” model has 95% accuracy, close to the real model’s 98%.</aside>
+</section>
+
+<!-- 27 Break -->
+<section data-background-color="#1F7A8C" class="dark">
+  <h1 class="center">Break · 5 min</h1>
+  <p class="center big">Stretch, grab water, open Google Colab</p>
+  <aside class="notes">Ask students to open Colab and sign in during the break so the hands-on starts on time.</aside>
+</section>
+
+<!-- 28 Over/underfitting -->
+<section>
+  <p class="eyebrow">6 · Overfitting vs. underfitting</p>
+  <h2>Too simple, just right, too complex</h2>
+  <table>
+    <tr><th></th><th>Underfitting</th><th>Good fit</th><th>Overfitting</th></tr>
+    <tr><td><b>Model is</b></td><td>too simple</td><td>just right</td><td>too complex: memorizes noise</td></tr>
+    <tr><td><b>Train score</b></td><td>low</td><td>high</td><td>very high</td></tr>
+    <tr><td><b>Test score</b></td><td>low</td><td>high</td><td><b>noticeably lower than train</b></td></tr>
+    <tr><td><b>Student analogy</b></td><td>didn’t study</td><td>understood the material</td><td>memorized the answer key</td></tr>
+  </table>
+  <div class="callout blue"><p><b>How to spot it:</b> compare train score vs. test score. A big gap = overfitting.</p></div>
+  <aside class="notes">Time: 8 minutes for section 6.</aside>
+</section>
+
+<!-- 29 Examples -->
+<section>
+  <p class="eyebrow">6 · Overfitting vs. underfitting</p>
+  <h2>Where it shows up in our models</h2>
+  <div class="grid2">
+    <div class="card"><h3>k-NN with k = 1</h3><p>Copies its single nearest neighbor, noise included → tends to <b>overfit</b>. Raising <i>k</i> smooths it out.</p></div>
+    <div class="card"><h3>Tree with no depth limit</h3><p>Keeps splitting until it memorizes the training data → tends to <b>overfit</b>. Set <code>max_depth</code>.</p></div>
+  </div>
+  <p class="muted">You’ll see both happen in the hands-on.</p>
+  <aside class="notes">Too large a k (like 200) underfits: the model just predicts the majority class.</aside>
+</section>
+
+<!-- 30 SC6 -->
+<section>
+  <span class="badge">✏️ Self-check 6 · 5 min</span>
+  <h2>Overfitting vs. underfitting</h2>
+  <p class="muted">Label each: <b>overfitting</b>, <b>underfitting</b> or <b>good fit</b></p>
+  <ol>
+    <li class="q">Train 99%, test 70%</li>
+    <li class="q">Train 60%, test 58%</li>
+    <li class="q">Train 92%, test 90%</li>
+    <li class="q">More likely to overfit: k-NN with <b>k = 1</b> or <b>k = 15</b>?</li>
+    <li class="q">Name two ways to reduce overfitting in a decision tree.</li>
+  </ol>
+  <aside class="notes">Students answer alone; reveal on the next slide.</aside>
+</section>
+
+<!-- 31 SC6 answers -->
+<section>
+  <span class="badge blue">Answers · Self-check 6</span>
+  <h2>Overfitting vs. underfitting</h2>
+  <ol>
+    <li class="q"><span class="ans">Overfitting</span>: big train–test gap</li>
+    <li class="q"><span class="ans">Underfitting</span>: both low</li>
+    <li class="q"><span class="ans">Good fit</span></li>
+    <li class="q"><span class="ans">k = 1</span></li>
+    <li class="q">Limit <code>max_depth</code>, require more samples per leaf, use more data, or use fewer features</li>
+  </ol>
+  <aside class="notes">Transition: now let’s see all of this on real data.</aside>
+</section>
+
+<!-- 32 Hands-on intro -->
+<section>
+  <p class="eyebrow">7 · Hands-on · 25 min</p>
+  <h2>Can we detect breast cancer?</h2>
+  <div class="grid2">
+    <div>
+      <p><b>Dataset:</b> Breast Cancer Wisconsin, real medical data built into scikit-learn</p>
+      <ul>
+        <li>569 patients</li>
+        <li>30 measurements per tumor (size, texture, smoothness…)</li>
+        <li>Goal: <b>cancer (malignant)</b> or <b>not (benign)</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Open the notebook</h3>
+      <p><code>notebooks/supervised_learning_handson.ipynb</code></p>
+      <p style="margin-top:0.5em">Upload it to Colab: File → Upload notebook, then Runtime → Run all.</p>
+    </div>
+  </div>
+  <aside class="notes">Time: 25 minutes. Walk around and help. In the dataset, 0 means malignant, so the notebook flips it: y = 1 means cancer.</aside>
+</section>
+
+<!-- 33 Hands-on code -->
+<section>
+  <p class="eyebrow">7 · Hands-on</p>
+  <h2>The steps in the notebook</h2>
+<pre><code class="language-python" data-trim>
+data = load_breast_cancer(as_frame=True)
+X, y = data.data, 1 - data.target          # 1 = cancer
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y)
+scaler = StandardScaler().fit(X_train)     # scale using TRAIN only
+X_train, X_test = scaler.transform(X_train), scaler.transform(X_test)
+
+logreg = LogisticRegression().fit(X_train, y_train)
+knn    = KNeighborsClassifier(n_neighbors=5).fit(X_train, y_train)
+tree   = DecisionTreeClassifier(max_depth=3, random_state=42).fit(X_train, y_train)
+
+pred = logreg.predict(X_test)
+print(accuracy_score(y_test, pred), recall_score(y_test, pred))
+</code></pre>
+  <aside class="notes">Point out stratify=y (keeps the same share of cancer cases in train and test) and scaling (k-NN measures distances, so columns need the same scale).</aside>
+</section>
+
+<!-- 34 Tasks -->
+<section>
+  <p class="eyebrow">7 · Hands-on</p>
+  <h2>Your tasks</h2>
+  <div class="grid2">
+    <ol class="small">
+      <li>Fill in the table: accuracy and recall for each model</li>
+      <li>Which model missed the fewest cancers (highest recall)?</li>
+      <li>In the k-NN loop, which <i>k</i> has the biggest train–test gap? Overfitting or underfitting?</li>
+      <li>Try <code>max_depth=None</code> for the tree. Does it overfit?</li>
+    </ol>
+    <table>
+      <tr><th>Model</th><th>Accuracy</th><th>Recall</th></tr>
+      <tr><td>Logistic regression</td><td></td><td></td></tr>
+      <tr><td>k-NN (k = 5)</td><td></td><td></td></tr>
+      <tr><td>Decision tree</td><td></td><td></td></tr>
+    </table>
+  </div>
+  <p class="muted small">Scores here are usually high (often above 90%), so look closely at recall and at the train–test gaps.</p>
+  <aside class="notes">Have 2–3 students share their tables before moving to the discussion.</aside>
+</section>
+
+<!-- 35 Discussion -->
+<section>
+  <p class="eyebrow">8 · Discussion · 5 min</p>
+  <h2>Let’s talk</h2>
+  <ol class="small">
+    <li>Why is <b>recall</b> more important than accuracy for cancer detection? Where would <b>precision</b> matter more?</li>
+    <li>A model scores 100% on training data and 70% on test data. What’s happening, and what would you try?</li>
+    <li>Which model would you trust most, and why? Is the most accurate model always the best choice?</li>
+    <li>How could you turn the real-estate competition into a classification problem?</li>
+  </ol>
+  <aside class="notes">Pick 2 of the 4 to fit in 5 minutes. Hints: precision matters for spam filters (don’t throw away real email); 100% vs. 70% is overfitting; real estate could predict “expensive” vs. “affordable”.</aside>
+</section>
+
+<!-- 36 Exit quiz -->
+<section>
+  <span class="badge">Exit quiz · 5 min</span>
+  <h2>Check your understanding</h2>
+  <ol class="small">
+    <li>Predicting a student’s exam score is regression or classification?</li>
+    <li>Why do we keep a test set aside?</li>
+    <li>In k-NN, what does <i>k</i> mean?</li>
+    <li>98% train accuracy, 75% test accuracy. What’s the problem?</li>
+    <li>A model catches 45 out of 50 real cancers. What’s its recall?</li>
+    <li>Name one metric for regression and one for classification.</li>
+  </ol>
+  <aside class="notes">Collect answers on paper or a form before revealing the answers.</aside>
+</section>
+
+<!-- 37 Exit quiz answers -->
+<section>
+  <span class="badge blue">Answers · Exit quiz</span>
+  <h2>Check your understanding</h2>
+  <ol class="small">
+    <li><span class="ans">Regression</span> · a score is a number</li>
+    <li>To check the model on <span class="ans">data it has never seen</span></li>
+    <li>The <span class="ans">number of nearest neighbors</span> that vote</li>
+    <li><span class="ans">Overfitting</span></li>
+    <li>45 ÷ 50 = <span class="ans">90%</span></li>
+    <li>e.g. <span class="ans">RMSE</span>; <span class="ans">accuracy or recall</span></li>
+  </ol>
+  <aside class="notes">Reveal after collecting answers.</aside>
+</section>
+
+<!-- 38 Summary -->
+<section data-background-color="#14213D" class="dark">
+  <p class="eyebrow">Wrap-up</p>
+  <h2>What we learned today</h2>
+  <ul>
+    <li>Supervised learning = learning from examples with known answers</li>
+    <li>Regression predicts numbers; classification predicts categories</li>
+    <li>Split → train → predict → evaluate, test set used once</li>
+    <li>Pick metrics that match the cost of mistakes (recall for cancer)</li>
+    <li>Watch the train–test gap for overfitting</li>
+  </ul>
+  <p class="small">Next: cross-validation, ensembles (random forests), and more classifiers</p>
+  <aside class="notes">Remind students about the Kaggle competition deadline and the score to beat: 15.24 RMSE.</aside>
+</section>
+
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/notes/notes.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/highlight.min.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    transition: 'fade',
+    plugins: [window.RevealNotes, window.RevealHighlight].filter(Boolean)
+  });
+</script>
+</body>
+</html>
